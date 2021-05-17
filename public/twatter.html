@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Twittar - Le réseau </title>
+		<link rel="icon" type="image/png" href="/pictures/logo.png"/>
+		<link rel="stylesheet" href="twatter.css">
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="all">
+			<div v-if="!connected" id="connexion">
+				<form class="info_connect" v-on:submit.prevent="connexion">
+					<input type="text" name="pseudo" v-model="pseudo">
+					<button  id="to_connect">Se connecter</button>
+				</form>
+				<p v-if="unknown"> Utilisateur {{pseudo}} Inconnu </p>
+			</div>
+			<div v-if="connected" class="coucou">
+				<div class="info_connect"> <img class="avatar" v-bind:src="avatar" alt="Avatar" id = "profile"> <p> Bonjour {{pseudo}} </p> </div>
+				<form v-on:submit.prevent="publier">
+					<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours"></textarea>
+					<button>Poster</button>
+				</form>
+			</div>
+			<div class="publications">
+				<publication
+					v-for="message in messages" v-bind:key="message.nmsg" v-bind:publi="message" v-bind:connected="connected" v-bind:pseudo="pseudo" v-bind:abos="abos">
+				</publication>
+			</div>
+		</div>
+		<script src="twatter.js"></script>
+	</body>
+</html>
