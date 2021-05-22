@@ -64,4 +64,14 @@ server.post("/publi",function (req,res) {
 		}
 	});
 });
+server.get("/avatars",function (req,res) {
+	var requete = 'SELECT * FROM Utilisateur;';
+	client.query(requete,function (err,resp){
+		if(err){
+			console.log(err);
+			return;
+		}
+		res.json(resp.rows);
+	});
+});
 server.listen(8080);

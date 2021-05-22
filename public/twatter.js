@@ -1,5 +1,5 @@
 Vue.component('publication',{
-	props:['publi','connected','pseudo','abos'],
+	props:['publi','connected','pseudo','abos','avatars'],
 	methods: {
 		afficherdate: function(){
 			var date = this.publi.d_msg;
@@ -44,9 +44,22 @@ Vue.component('publication',{
 		},
 		dislike : function () {
 			return 0;
+		},
+		avatar : function () {
+			for (var i = 0; i < this.avatars.length; i++)
+			{
+				console.log(this.avatars[i]);
+				if (this.avatars[i].pseudo === this.publi.pseudo)
+				{
+					console.log(this.avatars[i]);
+					return "pictures/" + this.avatars[i].avatar;
+				}
+			}
 		}
 	},
-	template:"<div v-if=to_print()> <span> {{publi.pseudo}} </span> :  <pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)</div>"
+	template:
+	"<div v-if=to_print()> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}} </span> :" +
+	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)</div>"
 });
 var twatter = new Vue({
 	el: "#all",
@@ -57,6 +70,7 @@ var twatter = new Vue({
 		publi_en_cours: "",
 		abos : [],
 		avatar : '',
+		avatars : [],
 		unknown : false,
 		dernier_import : new Date("1970-11-25")
 	},
@@ -72,7 +86,9 @@ var twatter = new Vue({
 			$.get("http://localhost:8080/abos",{pseudo: this.pseudo},function (data) {
 				list_abos(data);
 			});
-
+			$.get("http://localhost:8080/avatars",{},function (data) {
+				avatars(data);
+			})
 		},500);
 	},
 	methods: {
@@ -138,8 +154,11 @@ function ajout_msg(data) {
 	for (var msg in twatter.messages) {
 		deja_ajout.push(twatter.messages[msg].nmessage);
 	}
-	console.log(deja_ajout);
+	//console.log(deja_ajout);
 	twatter.messages = data.filter(msg => ! (deja_ajout.includes(msg.nmessage))).concat(twatter.messages);
 };
 function list_abos(data) {
+}
+function avatars(data) {
+	twatter.avatars = data;
 }
