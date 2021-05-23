@@ -31,7 +31,6 @@ server.post("/connect",function (req,res) {
 server.get("/msg", function (req,res) {
 	var d = req.query.date;
 	var requete = 'SELECT * FROM Message WHERE d_msg > \'' + req.query.date + '\' ORDER BY nmessage DESC;';
-	var t = [];
 	var r = client.query(requete,function(err,resp){
 		if(err){
 			console.log(err);
@@ -43,14 +42,19 @@ server.get("/msg", function (req,res) {
 });
 server.get("/abos",function (req,res) {
 	var d = req.query.pseudo;
-	var requete = 'SELECT abonnement FROM Abonnements WHERE abonne LIKE \'' + d + '\';';
+	var requete = 'SELECT abonnement AS pseudo FROM Abonnements WHERE abonne LIKE \'' + d + '\';';
 	var r = client.query(requete,function (err,resp) {
 		if(err){
 			console.log(err);
 			return;
 		}
 		var r = resp.rows;
-		res.json(r);
+		var t = [];
+		for (var i in r){
+			t.push(r[i].pseudo);
+		}
+		res.send(t);
+		//res.json(r);
 	});
 });
 server.post("/publi",function (req,res) {
@@ -103,6 +107,29 @@ server.get("/react_client",function (req,res) {
 			return;
 		}
 		res.json(resp.rows);
+	});
+});
+server.get("/abonne",function (req,res) {
+	var abonne = req.query.abonne;
+	var abonnement = req.query.abonnement;
+	var requete = "INSERT INTO Abonnements(abonne,abonnement) VALUES ('" + abonne + "','" +  abonnement + "');";
+	client.query(requete,function (err,resp) {
+		if(err){
+			console.log(err);
+			return;
+		}
+	});
+
+});
+server.get("/desabonne",function (req,res) {
+	var abonne = req.query.abonne;
+	var abonnement = req.query.abonnement;
+	var requete = "DELETE FROM Abonnements WHERE abonne LIKE '" + abonne + "' AND abonnement LIKE '" +  abonnement + "';";
+	client.query(requete,function (err,resp) {
+		if(err){
+			console.log(err);
+			return;
+		}
 	});
 });
 server.get("/jaimepas",function (req,res) {

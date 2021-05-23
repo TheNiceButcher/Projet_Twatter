@@ -45,6 +45,18 @@ Vue.component('publication',{
 				}
 			}
 			return true;
+		},
+		abonne : function () {
+			$.get("http://localhost:8080/abonne",{abonne : this.client.pseudo, abonnement : this.publi.pseudo},
+				function (data) {
+
+				});
+		},
+		desabonne : function () {
+			$.get("http://localhost:8080/desabonne",{abonne : this.client.pseudo, abonnement : this.publi.pseudo },
+				function (data) {
+
+				});
 		}
 
 	},
@@ -81,10 +93,17 @@ Vue.component('publication',{
 		jaimepas : function () {
 			$.get("http://localhost:8080/disliked",{pseudo : this.client.pseudo,nmessage : this.publi.nmessage},
 			function (){});
+		},
+		non_abonne : function () {
+			return this.client.connected && !this.client.abos.includes(this.publi.pseudo) && this.client.pseudo != this.publi.pseudo;
+		},
+		desabonnable : function () {
+			return this.client.connected && this.client.abos.includes(this.publi.pseudo) && this.client.pseudo != this.publi.pseudo;
 		}
 	},
 	template:
-	"<div v-if=to_print() class = 'publi'> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}} </span> :" +
+	"<div v-if=to_print() class = 'publi'> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}}" +
+	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span> :" +
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
 	+"<div v-if=\"client.connected\" > <input type=\"checkbox\" v-model=\"liked\"> Jaime"
 	+"<input type=\"checkbox\" v-model=\"disliked\"> Jaime pas</div></div>"
@@ -97,7 +116,12 @@ var twatter = new Vue({
 		global : {
 			avatars : [],
 			likes : [],
-			dislikes : []
+			dislikes : [],
+			filtres : {
+				onlyliked : false,
+				ateveryone : false,
+				atpseudo : false,
+			}
 
 		},
 		client : {
@@ -119,7 +143,7 @@ var twatter = new Vue({
 				ajout_msg(data);
 			});
 			this.dernier_import = new Date();
-			$.get("http://localhost:8080/abos",{pseudo: this.pseudo},function (data) {
+			$.get("http://localhost:8080/abos",{pseudo: this.client.pseudo},function (data) {
 				list_abos(data);
 			});
 			$.get("http://localhost:8080/avatars",function (data) {
@@ -156,7 +180,7 @@ var twatter = new Vue({
 			this.client.pseudo = '';
 			this.client.reactions = [];
 			this.client.avatar = '';
-			this.client.unknown = false; 
+			this.client.unknown = false;
 		}
 	}
 });
@@ -210,6 +234,7 @@ function ajout_msg(data) {
 	twatter.messages = data.filter(msg => ! (deja_ajout.includes(msg.nmessage))).concat(twatter.messages);
 };
 function list_abos(data) {
+	twatter.client.abos = data;
 }
 function avatars(data) {
 	twatter.global.avatars = data;
