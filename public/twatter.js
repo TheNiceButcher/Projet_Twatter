@@ -1,5 +1,5 @@
 Vue.component('publication',{
-	props:['publi','connected','pseudo','abos','avatars'],
+	props:['publi','connected','pseudo','abos','global'],
 	methods: {
 		afficherdate: function(){
 			var date = this.publi.d_msg;
@@ -40,19 +40,31 @@ Vue.component('publication',{
 	},
 	computed: {
 		like : function () {
+			for (var i = 0; i < this.global.likes.length; i++)
+			{
+				if (this.global.likes[i].nmessage === this.publi.nmessage)
+				{
+					return this.global.likes[i].nlike;
+				}
+			}
 			return 0;
 		},
 		dislike : function () {
+			for (var i = 0; i < this.global.dislikes.length; i++)
+			{
+				if (this.global.dislikes[i].nmessage === this.publi.nmessage)
+				{
+					return this.global.dislikes[i].ndislike;
+				}
+			}
 			return 0;
 		},
 		avatar : function () {
-			for (var i = 0; i < this.avatars.length; i++)
+			for (var i = 0; i < this.global.avatars.length; i++)
 			{
-				console.log(this.avatars[i]);
-				if (this.avatars[i].pseudo === this.publi.pseudo)
+				if (this.global.avatars[i].pseudo === this.publi.pseudo)
 				{
-					console.log(this.avatars[i]);
-					return "pictures/" + this.avatars[i].avatar;
+					return "pictures/" + this.global.avatars[i].avatar;
 				}
 			}
 		}
@@ -68,9 +80,13 @@ var twatter = new Vue({
 		pseudo : '',
 		messages: [],
 		publi_en_cours: "",
+		global : {
+			avatars : [],
+			likes : [],
+			dislikes : []
+		},
 		abos : [],
 		avatar : '',
-		avatars : [],
 		unknown : false,
 		dernier_import : new Date("1970-11-25")
 	},
@@ -86,9 +102,15 @@ var twatter = new Vue({
 			$.get("http://localhost:8080/abos",{pseudo: this.pseudo},function (data) {
 				list_abos(data);
 			});
-			$.get("http://localhost:8080/avatars",{},function (data) {
+			$.get("http://localhost:8080/avatars",function (data) {
 				avatars(data);
-			})
+			});
+			$.get("http://localhost:8080/like",function(data){
+				like(data);
+			});
+			$.get("http://localhost:8080/dislike",function(data){
+				dislike(data);
+			});
 		},500);
 	},
 	methods: {
@@ -160,5 +182,11 @@ function ajout_msg(data) {
 function list_abos(data) {
 }
 function avatars(data) {
-	twatter.avatars = data;
+	twatter.global.avatars = data;
+}
+function like(data) {
+	twatter.global.likes = data;
+}
+function dislike(data) {
+	twatter.global.dislikes = data;
 }

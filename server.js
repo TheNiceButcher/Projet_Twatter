@@ -74,4 +74,24 @@ server.get("/avatars",function (req,res) {
 		res.json(resp.rows);
 	});
 });
+server.get("/like",function (req,res) {
+	var requete = 'SELECT nmessage,COUNT(*) AS NLike FROM LIKES WHERE reaction = 1 GROUP BY nmessage;'
+	client.query(requete,function (err,resp) {
+		if(err){
+			console.log(err);
+			return;
+		}
+		res.json(resp.rows);
+	});
+});
+server.get("/dislike",function (req,res) {
+	var requete = 'SELECT nmessage,COUNT(*) AS NDislike FROM LIKES WHERE reaction = -1 GROUP BY nmessage;'
+	client.query(requete,function (err,resp) {
+		if(err){
+			console.log(err);
+			return;
+		}
+		res.json(resp.rows);
+	});
+});
 server.listen(8080);
