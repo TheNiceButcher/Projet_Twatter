@@ -6,6 +6,9 @@
 	box-sizing: border-box;
 	padding-top: 100px;
 }
+.publi{
+	padding: 20px;
+}
 .coucou{
 	color: green;
 }

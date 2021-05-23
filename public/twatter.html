@@ -10,15 +10,19 @@
 	</head>
 	<body>
 		<div id="all">
-			<div v-if="!connected" id="connexion">
+			<div v-if="!client.connected" id="connexion">
 				<form class="info_connect" v-on:submit.prevent="connexion">
-					<input type="text" name="pseudo" v-model="pseudo">
+					<input type="text" name="pseudo" v-model="client.pseudo">
 					<button  id="to_connect">Se connecter</button>
 				</form>
-				<p v-if="unknown"> Utilisateur {{pseudo}} Inconnu </p>
+				<p v-if="client.unknown"> Utilisateur {{client.pseudo}} Inconnu </p>
 			</div>
-			<div v-if="connected" class="coucou">
-				<div class="info_connect"> <img class="avatar" v-bind:src="avatar" alt="Avatar" id = "profile"> <p> Bonjour {{pseudo}} </p> </div>
+			<div v-if="client.connected" class="coucou">
+				<div class="info_connect">
+					<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
+					<p> Bonjour {{client.pseudo}} </p>
+					<p> <button type="button" name="deconnexion" v-on:click="deconnexion">Se deconnecter</button> </p>
+				</div>
 				<form v-on:submit.prevent="publier">
 					<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours"></textarea>
 					<button>Poster</button>
@@ -26,7 +30,7 @@
 			</div>
 			<div class="publications">
 				<publication
-					v-for="message in messages" v-bind:key="message.nmsg" v-bind:publi="message" v-bind:connected="connected" v-bind:pseudo="pseudo" v-bind:abos="abos" v-bind:global="global">
+					v-for="message in messages" v-bind:key="message.nmsg" v-bind:publi="message" v-bind:client="client" v-bind:global="global">
 				</publication>
 			</div>
 		</div>

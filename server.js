@@ -94,4 +94,28 @@ server.get("/dislike",function (req,res) {
 		res.json(resp.rows);
 	});
 });
+server.get("/react_client",function (req,res) {
+	var pseudo = req.query.pseudo;
+	var requete = "SELECT nmessage,reaction FROM Likes WHERE pseudo LIKE '" + pseudo + "';";
+	client.query(requete,function (err,resp) {
+		if(err){
+			console.log(err);
+			return;
+		}
+		res.json(resp.rows);
+	});
+});
+server.get("/jaimepas",function (req,res) {
+	var pseudo = req.query.pseudo;
+	var nmess = req.query.nmessage;
+	var requete = "DELETE FROM LIKES WHERE pseudo LIKE '" + pseudo + "' AND nmessage = " + nmess;
+	requete += ";INSERT INTO Likes(nmessage,pseudo,reaction) VALUES (" + nmess + ",'" + pseudo + "'," + -1 +  ")";
+	client.query(requete,function (err,resp) {
+		if(err){
+			console.log(err);
+			return;
+		}
+		res.json(resp.rows);
+	});
+})
 server.listen(8080);

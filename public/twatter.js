@@ -1,5 +1,11 @@
 Vue.component('publication',{
-	props:['publi','connected','pseudo','abos','global'],
+	props:['publi','client','global'],
+	data : function (){
+		return {
+		liked : this.client.reactions.includes({nmessage : this.publi.nmessage,reaction : 1}),
+		disliked : this.client.reactions.includes({nmessage : this.publi.nmessage,reaction : -1})
+		};
+	},
 	methods: {
 		afficherdate: function(){
 			var date = this.publi.d_msg;
@@ -14,16 +20,20 @@ Vue.component('publication',{
 			return result;
 		},
 		to_print : function () {
+
+			var connected = this.client.connected;
+			var pseudo = this.client.pseudo;
+			var abos = this.client.abos;
 			//Non connecté -> on verifie si le message continent @everyone
-			if(!this.connected && !this.publi.contenu.includes("@everyone"))
+			if(!connected && !this.publi.contenu.includes("@everyone"))
 			{
 				return false;
 			}
-			if (this.connected)
+			if (connected)
 			{
-				var name_to_at = [this.pseudo,"everyone"].concat(this.abos.slice());
+				var name_to_at = [pseudo,"everyone"].concat(abos.slice());
 				//Le message n'est pas ecrit par une personne que l'on suit
-				if(this.publi.pseudo !== this.pseudo && !(this.abos.includes(this.publi.pseudo)))
+				if(this.publi.pseudo !== pseudo && !(abos.includes(this.publi.pseudo)))
 				{
 					for (var pseudo in name_to_at) {
 						if(this.publi.contenu.includes("@" + name_to_at[pseudo]))
@@ -67,27 +77,37 @@ Vue.component('publication',{
 					return "pictures/" + this.global.avatars[i].avatar;
 				}
 			}
+		},
+		jaimepas : function () {
+			$.get("http://localhost:8080/disliked",{pseudo : this.client.pseudo,nmessage : this.publi.nmessage},
+			function (){});
 		}
 	},
 	template:
-	"<div v-if=to_print()> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}} </span> :" +
-	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)</div>"
+	"<div v-if=to_print() class = 'publi'> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}} </span> :" +
+	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
+	+"<div v-if=\"client.connected\" > <input type=\"checkbox\" v-model=\"liked\"> Jaime"
+	+"<input type=\"checkbox\" v-model=\"disliked\"> Jaime pas</div></div>"
 });
 var twatter = new Vue({
 	el: "#all",
 	data:{
-		connected: false,
-		pseudo : '',
 		messages: [],
 		publi_en_cours: "",
 		global : {
 			avatars : [],
 			likes : [],
 			dislikes : []
+
 		},
-		abos : [],
-		avatar : '',
-		unknown : false,
+		client : {
+			connected: false,
+			pseudo : '',
+			avatar : '',
+			unknown : false,
+			reactions : [],
+			abos : []
+		},
 		dernier_import : new Date("1970-11-25")
 	},
 	//Toutes les 500 ms, on voit s'il y a des nouveaux messages
@@ -111,22 +131,32 @@ var twatter = new Vue({
 			$.get("http://localhost:8080/dislike",function(data){
 				dislike(data);
 			});
+			/*$.get("http://localhost:8080/react_client",{pseudo : this.client.pseudo},function (data) {
+				reactions(data);
+			});*/
 		},500);
 	},
 	methods: {
 		publier: function (event) {
 			console.log(this.publi_en_cours);
-			$.post("http://localhost:8080/publi/",{pseudo:this.pseudo,message:this.publi_en_cours},
+			$.post("http://localhost:8080/publi/",{pseudo:this.client.pseudo,message:this.publi_en_cours},
 				function (data) {
 				});
 			this.publi_en_cours = "";
 		},
 		connexion : function () {
-			var d = this.unknown;
-			var s = $.post("http://localhost:8080/connect/",{name:this.pseudo},function(data){
+			var d = this.client.unknown;
+			var s = $.post("http://localhost:8080/connect/",{name:this.client.pseudo},function(data){
 				console.log(data);
 				connect(data);
 			});
+		},
+		deconnexion : function () {
+			this.client.connected = false;
+			this.client.pseudo = '';
+			this.client.reactions = [];
+			this.client.avatar = '';
+			this.client.unknown = false; 
 		}
 	}
 });
@@ -163,12 +193,12 @@ function convert_date(d){
 function connect(data) {
 		if (data.length == 0)
 		{
-			twatter.unknown = true;
+			twatter.client.unknown = true;
 		}
 		else {
-			twatter.unknown = false;
-			twatter.avatar = "/pictures/" + data[0].avatar;
-			twatter.connected = true;
+			twatter.client.unknown = false;
+			twatter.client.avatar = "/pictures/" + data[0].avatar;
+			twatter.client.connected = true;
 		}
 	};
 function ajout_msg(data) {
@@ -189,4 +219,7 @@ function like(data) {
 }
 function dislike(data) {
 	twatter.global.dislikes = data;
+}
+function reactions(data) {
+	twatter.client.reactions = data;
 }
