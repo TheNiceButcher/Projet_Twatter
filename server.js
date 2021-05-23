@@ -14,18 +14,18 @@ client.connect();
 server.use(express.static('public'));
 server.use(bodyparser.urlencoded({ extended: false }));
 server.get("/",function (req,res) {
-	res.sendFile('twatter.html',{root:"public"});
+	res.sendFile('accueil.html',{root:"public"});
 });
 server.post("/connect",function (req,res) {
-	console.log("Connexion de " + req.body.name);
-	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.body.name + '\';';
+	console.log("Connexion de " + req.body.pseudo);
+	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.body.pseudo + '\';';
 	var r = client.query(requete,function (err,resp) {
 		if(err){
 			console.log(err);
 			return;
 		}
 		var r = resp.rows;
-		res.json(r);
+		res.redirect("/home/" + req.body.pseudo);
 	});
 });
 server.get("/msg", function (req,res) {
@@ -70,6 +70,16 @@ server.post("/publi",function (req,res) {
 });
 server.get("/avatars",function (req,res) {
 	var requete = 'SELECT * FROM Utilisateur;';
+	client.query(requete,function (err,resp){
+		if(err){
+			console.log(err);
+			return;
+		}
+		res.json(resp.rows);
+	});
+});
+server.get("/avatar",function (req,res) {
+	var requete = 'SELECT avatar FROM Utilisateur WHERE pseudo LIKE \'' + req.query.pseudo + '\';';
 	client.query(requete,function (err,resp){
 		if(err){
 			console.log(err);
@@ -144,5 +154,8 @@ server.get("/jaimepas",function (req,res) {
 		}
 		res.json(resp.rows);
 	});
-})
+});
+server.get("/home/:id",function (req,res) {
+	res.sendFile("twatter.html",{root : "public"});
+});
 server.listen(8080);

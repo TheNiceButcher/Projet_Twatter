@@ -4,29 +4,36 @@
 		<meta charset="utf-8">
 		<title>Twittar - Le réseau </title>
 		<link rel="icon" type="image/png" href="/pictures/logo.png"/>
-		<link rel="stylesheet" href="twatter.css">
+		<link rel="stylesheet" href="../twatter.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	</head>
 	<body>
 		<div id="all">
-			<div v-if="!client.connected" id="connexion">
-				<form class="info_connect" v-on:submit.prevent="connexion">
-					<input type="text" name="pseudo" v-model="client.pseudo">
-					<button  id="to_connect">Se connecter</button>
-				</form>
-				<p v-if="client.unknown"> Utilisateur {{client.pseudo}} Inconnu </p>
-			</div>
 			<div v-if="client.connected" class="coucou">
 				<div class="info_connect">
 					<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
 					<p> Bonjour {{client.pseudo}} </p>
-					<p> <button type="button" name="deconnexion" v-on:click="deconnexion">Se deconnecter</button> </p>
+					<form class="" action="http://localhost:8080/" method="get">
+						<input type="submit" name="" value="Se deconnecter">
+					</form>
 				</div>
-				<form v-on:submit.prevent="publier">
-					<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours"></textarea>
-					<button>Poster</button>
-				</form>
+				<div class="nouveau_message">
+					<form class = "pu" v-on:submit.prevent="publier">
+						<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours"></textarea>
+						<button>Poster</button>
+					</form>
+				</div>
+			</div>
+			<div class="filtres" v-if="client.connected">
+				<label for="">Filtres possibles</label> <br>
+				<input type="checkbox" v-model="global.filtres.ateveryone">Everyone</input> <br>
+				<input type="checkbox" v-model="global.filtres.atclient">@{{client.pseudo}}</input> <br>
+				<input type="checkbox" v-model="global.filtres.atpseudo">Pseudo</input>
+				<input type="text" v-model="global.filtres.user"> <br>
+				<input type="checkbox" v-model="global.filtres.hashtag">Hashtag</input>
+				<input type="text" v-model="global.filtres.nomhash"> <br>
+				<input type="checkbox" v-model="global.filtres.caca">
 			</div>
 			<div class="publications">
 				<publication
@@ -34,6 +41,6 @@
 				</publication>
 			</div>
 		</div>
-		<script src="twatter.js"></script>
+		<script src="../twatter.js"></script>
 	</body>
 </html>

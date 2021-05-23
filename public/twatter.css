@@ -1,14 +1,24 @@
 #connexion{
 	float: right;
 }
+.nouveau_message{
+	position: fixed;
+	left : 35%;
+}
 .publications{
-	text-align: center;
+	vertical-align: middle;
 	box-sizing: border-box;
-	padding-top: 100px;
+	padding-top: 150px;
+	padding-left: 20%;
 }
 .publi{
-	padding: 20px;
+	vertical-align: middle;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 10%;
+	margin: 20px;
 	font-family: cursive;
+	background-color: gray;
 }
 .coucou{
 	color: green;
@@ -19,4 +29,8 @@
 }
 .info_connect{
 	float: right;
+}
+.filtres{
+	position: absolute;
+	top : 150px;
 }

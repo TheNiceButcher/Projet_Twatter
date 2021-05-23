@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Twittar - Le réseau </title>
+		<link rel="icon" type="image/png" href="/pictures/logo.png"/>
+		<link rel="stylesheet" href="twatter.css">
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="all">
+			<div id="connexion">
+				<form class="info_connect" action="http://localhost:8080/connect" method="post">
+					<input type="text" name="pseudo">
+					<input type="submit" name="" value="Se connecter">
+				</form>
+			</div>
+			<div class="publications">
+				<publication
+					v-for="message in messages" v-bind:key="message.nmsg" v-bind:publi="message" v-bind:client="client" v-bind:global="global">
+				</publication>
+			</div>
+		</div>
+		<script src="accueil.js"></script>
+	</body>
+</html>
