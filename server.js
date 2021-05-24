@@ -14,18 +14,26 @@ client.connect();
 server.use(express.static('public'));
 server.use(bodyparser.urlencoded({ extended: false }));
 server.get("/",function (req,res) {
+	console.log(req.query);
 	res.sendFile('accueil.html',{root:"public"});
 });
 server.post("/connect",function (req,res) {
 	console.log("Connexion de " + req.body.pseudo);
-	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.body.pseudo + '\';';
+	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.body.pseudo + '\' AND mot_de_passe LIKE \'' + req.body.pwd + '\';';
 	var r = client.query(requete,function (err,resp) {
 		if(err){
 			console.log(err);
 			return;
 		}
 		var r = resp.rows;
-		res.redirect("/home/" + req.body.pseudo);
+		if (r.length==0)
+		{
+			res.redirect("/?error=" + req.body.pseudo);
+		}
+		else
+		{
+			res.redirect("/home/" + req.body.pseudo);
+		}
 	});
 });
 server.get("/msg", function (req,res) {

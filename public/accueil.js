@@ -1,11 +1,5 @@
 Vue.component('publication',{
 	props:['publi','client','global'],
-	data : function (){
-		return {
-		liked : this.client.reactions.includes({nmessage : this.publi.nmessage,reaction : 1}),
-		disliked : this.client.reactions.includes({nmessage : this.publi.nmessage,reaction : -1})
-		};
-	},
 	methods: {
 		afficherdate: function(){
 			var date = this.publi.d_msg;
@@ -21,30 +15,7 @@ Vue.component('publication',{
 		},
 		to_print : function () {
 
-			var connected = this.client.connected;
-			var pseudo = this.client.pseudo;
-			var abos = this.client.abos;
-			//Non connecté -> on verifie si le message continent @everyone
-			if(!connected && !this.publi.contenu.includes("@everyone"))
-			{
-				return false;
-			}
-			if (connected)
-			{
-				var name_to_at = [pseudo,"everyone"].concat(abos.slice());
-				//Le message n'est pas ecrit par une personne que l'on suit
-				if(this.publi.pseudo !== pseudo && !(abos.includes(this.publi.pseudo)))
-				{
-					for (var pseudo in name_to_at) {
-						if(this.publi.contenu.includes("@" + name_to_at[pseudo]))
-						{
-							return true;
-						}
-					}
-					return false;
-				}
-			}
-			return true;
+			return this.publi.contenu.includes("@everyone");
 		}
 
 	},
@@ -87,7 +58,6 @@ var twatter = new Vue({
 	el: "#all",
 	data:{
 		messages: [],
-		publi_en_cours: "",
 		global : {
 			avatars : [],
 			likes : [],
@@ -130,33 +100,7 @@ var twatter = new Vue({
 			$.get("http://localhost:8080/dislike",function(data){
 				dislike(data);
 			});
-			/*$.get("http://localhost:8080/react_client",{pseudo : this.client.pseudo},function (data) {
-				reactions(data);
-			});*/
 		},500);
-	},
-	methods: {
-		publier: function (event) {
-			console.log(this.publi_en_cours);
-			$.post("http://localhost:8080/publi/",{pseudo:this.client.pseudo,message:this.publi_en_cours},
-				function (data) {
-				});
-			this.publi_en_cours = "";
-		},
-		connexion : function () {
-			var d = this.client.unknown;
-			var s = $.post("http://localhost:8080/connect/",{name:this.client.pseudo},function(data){
-				console.log(data);
-				connect(data);
-			});
-		},
-		deconnexion : function () {
-			this.client.connected = false;
-			this.client.pseudo = '';
-			this.client.reactions = [];
-			this.client.avatar = '';
-			this.client.unknown = false;
-		}
 	}
 });
 //Renvoie la chaine de caractère correspondant à la Date d
@@ -194,7 +138,6 @@ function ajout_msg(data) {
 	for (var msg in twatter.messages) {
 		deja_ajout.push(twatter.messages[msg].nmessage);
 	}
-	//console.log(deja_ajout);
 	twatter.messages = data.filter(msg => ! (deja_ajout.includes(msg.nmessage))).concat(twatter.messages);
 };
 function avatars(data) {
@@ -206,14 +149,11 @@ function like(data) {
 function dislike(data) {
 	twatter.global.dislikes = data;
 }
-function get_name_client() {
-			var url = window.location.href;
-			if(url != "http://localhost:8080/")
-			{
-				var i = url.lastIndexOf('/')+1;
-				console.log(url.substring(i+1));
-				twatter.client.connected = true;
-				twatter.client.pseudo = url.substring(i+1);
-			}
-	};
-get_name_client();
+$(document).ready(function () {
+	var url = window.location.href;
+	if(url.includes("?error"))
+	{
+		$("#connexion").append("<div>Connexion impossible</div>");
+
+	}
+});
