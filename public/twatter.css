@@ -2,7 +2,7 @@
 	float: right;
 }
 .nouveau_message{
-	position: fixed;
+	position: absolute;
 	left : 35%;
 }
 .publications{
@@ -33,4 +33,13 @@
 .filtres{
 	position: absolute;
 	top : 150px;
+}
+.baniere {
+	background-color: red;
+	align-content: center;
+}
+h1{
+	text-align: center;
+	font-family: fantasy;
+	font-style: italic;
 }
