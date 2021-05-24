@@ -164,7 +164,21 @@ server.get("/react",function (req,res) {
 		res.json(resp.rows);
 	});
 });
-server.get("/home/:id",function (req,res) {
-	res.sendFile("twatter.html",{root : "public"});
+server.get("/home/:pseudo",function (req,res,next) {
+	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.params.pseudo + '\';';
+	client.query(requete,function (err,resp){
+		if(err){
+			console.log(err);
+			return;
+		}
+		if (resp.rows.length == 0)
+		{
+			next();
+		}
+		else res.sendFile("twatter.html",{root : "public"});
+	});
+});
+server.use(function (req,res) {
+	res.sendFile("erreur.html",{root:"public"});
 });
 server.listen(8080);
