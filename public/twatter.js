@@ -95,7 +95,6 @@ Vue.component('publication',{
 		react : function () {
 				$.get("http://localhost:8080/react",{pseudo : this.client.pseudo,nmessage : this.publi.nmessage,reaction : this.reaction},
 				function (data){
-					console.log(data);
 				});
 		},
 		profile : function () {
@@ -103,6 +102,10 @@ Vue.component('publication',{
 			twatter.global.filtres.atclient = false;
 			twatter.global.filtres.user = this.publi.pseudo;
 			twatter.global.filtres.abo = false;
+			twatter.global.filtres.ateveryone = false;
+		},
+		repondre : function () {
+			twatter.publi_en_cours = "@" + this.publi.pseudo;
 		}
 
 	},
@@ -150,8 +153,9 @@ Vue.component('publication',{
 	"<div v-if=to_print() class = 'publi' v-bind:id=idmess> <span> <img class=avatar v-bind:src=avatar /> <p v-on:click='profile'>{{publi.pseudo}}</p>" +
 	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span> :" +
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
-	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =1> Jaime"
-	+"<input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =-1> Jaime pas <input type='radio' v-model='reaction' value = 0 v-on:change='react'></div></div>"
+	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =1> J'aime"
+	+"<input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =-1> J'aime pas <input type='radio' v-model='reaction' value = 0 v-on:change='react'></div>"
+	+ "<button v-if='client.pseudo!=publi.pseudo' v-on:click='repondre'>Repondre</button></div>"
 });
 var twatter = new Vue({
 	el: "#all",
@@ -210,10 +214,23 @@ var twatter = new Vue({
 	methods: {
 		publier: function (event) {
 			console.log(this.publi_en_cours);
-			$.post("http://localhost:8080/publi/",{pseudo:this.client.pseudo,message:this.publi_en_cours},
-				function (data) {
-				});
-			this.publi_en_cours = "";
+			if (this.publi_en_cours != "")
+			{
+				$.post("http://localhost:8080/publi/",{pseudo:this.client.pseudo,message:this.publi_en_cours},
+					function (data) {
+					});
+				this.publi_en_cours = "";
+			}
+		},
+		defaut: function (event) {
+			this.global.filtres.ateveryone = true;
+			this.global.filtres.atclient = true;
+			this.global.filtres.atpseudo = false;
+			this.global.filtres.user = "";
+			this.global.filtres.hashtag = false;
+			this.global.filtres.nomhash = "";
+			this.global.filtres.abo = true;
+			this.global.filtres.ouet = "ou";
 		}
 	}
 });

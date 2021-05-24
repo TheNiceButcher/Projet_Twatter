@@ -35,7 +35,8 @@
 				<input type="text" v-model="global.filtres.nomhash"> <br>
 				<input type="checkbox" v-model="global.filtres.abo">Abonnements</input>
 				<input type="radio" v-model="global.filtres.ouet" value="et">Et</input>
-				<input type="radio" v-model="global.filtres.ouet" value="ou">Ou</input>
+				<input type="radio" v-model="global.filtres.ouet" value="ou">Ou</input> <br>
+				<button v-on:click="defaut">Retablir valeurs par défaut</button>
 			</div>
 			<div class="publications">
 				<publication
