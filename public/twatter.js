@@ -2,10 +2,7 @@ Vue.component('publication',{
 	props:['publi','client','global'],
 	data : function () {
 			return {
-				reaction : function () {
-					console.log(this.client.reactions);
-					return 0;
-				}
+				reaction :0
 			}
 
 	},
@@ -22,29 +19,65 @@ Vue.component('publication',{
 			result = date.substring(11,19);
 			return result;
 		},
+		filtres_defaut : function () {
+			var f = this.global.filtres;
+			return f.ateveryone == true && f.atclient == true && f.atpseudo == false && f.hashtag == false &&f.abo == true;
+		},
+		to_print_everyone : function () {
+			return this.publi.contenu.includes("@everyone");
+		},
+		to_print_atclient : function () {
+			return this.publi.pseudo.includes("@" + this.client.pseudo);
+		},
+		to_print_hashtag : function () {
+			return this.publi.pseudo.includes("#" + this.global.filtres.nomhash);
+		},
+		to_print_pseudo : function(){
+			return this.publi.pseudo === this.global.filtres.user;
+		},
+		to_print_abos : function () {
+			return this.client.abos.includes(this.publi.pseudo);
+		},
 		to_print : function () {
-				var abos = this.client.abos;
-				var name_to_at = [pseudo,"everyone"].concat(abos.slice());
-				if(this.global.filtres.atclient && this.publi.pseudo == this.client.pseudo)
+				if(this.global.filtres.ouet == "ou")
 				{
-					return true;
-				}
-				if(this.global.filtres.atpseudo && this.global.filtres.user != "")
-				{
-					return this.publi.pseudo === this.global.filtres.user;
-				}
-				//Le message n'est pas ecrit par une personne que l'on suit
-				if(!(abos.includes(this.publi.pseudo)))
-				{
-					for (var pseudo in name_to_at) {
-						if(this.publi.contenu.includes("@" + name_to_at[pseudo]))
-						{
-							return true;
-						}
+					if (this.filtres_defaut())
+					{
+						return this.to_print_everyone() || this.to_print_abos() || this.to_print_atclient() || this.publi.pseudo == this.client.pseudo;
 					}
+					if (this.global.filtres.ateveryone && this.to_print_everyone())
+						return true;
+					if (this.global.filtres.atclient && this.to_print_atclient()){
+						return true;
+					}
+					if (this.global.filtres.hashtag && this.to_print_hashtag()){
+						return true;
+					}
+					if (this.global.filtres.abo && this.to_print_abos()){
+						return true;
+					}
+					if (this.global.filtres.atpseudo && this.to_print_pseudo())
+						return true;
 					return false;
 				}
-				return true;
+				if(this.global.filtres.ouet == "et")
+				{
+					if (this.global.filtres.ateveryone && !this.to_print_everyone())
+						return false;
+					if (this.global.filtres.atclient && !this.to_print_atclient()){
+						return false;
+					}
+					if (this.global.filtres.hashtag && !this.to_print_hashtag()){
+						return false;
+					}
+					if (this.global.filtres.abo && !this.to_print_abos()){
+						return false;
+					}
+					if (this.global.filtres.atpseudo && !this.to_print_pseudo())
+						return false;
+					return true;
+				}
+
 
 		},
 		abonne : function () {
@@ -64,6 +97,12 @@ Vue.component('publication',{
 				function (data){
 					console.log(data);
 				});
+		},
+		profile : function () {
+			twatter.global.filtres.atpseudo = true;
+			twatter.global.filtres.atclient = false;
+			twatter.global.filtres.user = this.publi.pseudo;
+			twatter.global.filtres.abo = false;
 		}
 
 	},
@@ -102,10 +141,13 @@ Vue.component('publication',{
 		},
 		desabonnable : function () {
 			return this.client.connected && this.client.abos.includes(this.publi.pseudo) && this.client.pseudo != this.publi.pseudo;
+		},
+		idmess : function () {
+				return "mess" + this.publi.nmessage;
 		}
 	},
 	template:
-	"<div v-if=to_print() class = 'publi'> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}}" +
+	"<div v-if=to_print() class = 'publi' v-bind:id=idmess> <span> <img class=avatar v-bind:src=avatar /> <p v-on:click='profile'>{{publi.pseudo}}</p>" +
 	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span> :" +
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
 	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =1> Jaime"
@@ -127,6 +169,7 @@ var twatter = new Vue({
 				user : "",
 				hashtag : false,
 				nomhash : "",
+				abo : true,
 				ouet : "ou",
 			}
 
