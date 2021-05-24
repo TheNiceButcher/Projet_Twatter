@@ -5,7 +5,8 @@ CREATE DATABASE twatter;
 \c twatter twattos localhost;
 CREATE TABLE Utilisateur (
 	pseudo TEXT PRIMARY KEY,
-	avatar TEXT DEFAULT 'default.jpeg'
+	avatar TEXT DEFAULT 'default.jpeg',
+	mot_de_passe TEXT NOT NULL
 );
 CREATE TABLE Message (
 	nmessage SERIAL PRIMARY KEY,
@@ -23,11 +24,13 @@ CREATE TABLE Likes (
 	pseudo TEXT  REFERENCES Utilisateur(pseudo),
 	reaction INT NOT NULL
 );
-INSERT INTO Utilisateur(pseudo) VALUES
-('KCorp'),
-('Kameto'),
-('Laink'),
-('Elon-kun');
+INSERT INTO Utilisateur(pseudo,mot_de_passe) VALUES
+('KCorp','champion'),
+('Kameto','super'),
+('Laink','yeah'),
+('Elon-kun','tesla');
 INSERT INTO Message(pseudo,contenu,d_msg) VALUES
 ('Elon-kun','vIVE TESLA', NOW()),
 ('Laink','@everyone Bienvenue', NOW());
+INSERT INTO Abonnements(abonne,abonnement) VALUES
+('Laink,Elon-kun');

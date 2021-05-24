@@ -21,19 +21,14 @@ Vue.component('publication',{
 		},
 		to_print : function () {
 
-			var connected = this.client.connected;
-			var pseudo = this.client.pseudo;
-			var abos = this.client.abos;
-			//Non connecté -> on verifie si le message continent @everyone
-			if(!connected && !this.publi.contenu.includes("@everyone"))
-			{
-				return false;
-			}
-			if (connected)
-			{
+				var abos = this.client.abos;
 				var name_to_at = [pseudo,"everyone"].concat(abos.slice());
+				if(this.global.filtres.atclient && this.publi.pseudo == this.client.pseudo)
+				{
+					return true;
+				}
 				//Le message n'est pas ecrit par une personne que l'on suit
-				if(this.publi.pseudo !== pseudo && !(abos.includes(this.publi.pseudo)))
+				if(!(abos.includes(this.publi.pseudo)))
 				{
 					for (var pseudo in name_to_at) {
 						if(this.publi.contenu.includes("@" + name_to_at[pseudo]))
@@ -43,8 +38,8 @@ Vue.component('publication',{
 					}
 					return false;
 				}
-			}
-			return true;
+				return true;
+
 		},
 		abonne : function () {
 			$.get("http://localhost:8080/abonne",{abonne : this.client.pseudo, abonnement : this.publi.pseudo},
@@ -105,7 +100,7 @@ Vue.component('publication',{
 	"<div v-if=to_print() class = 'publi'> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}}" +
 	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span> :" +
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
-	+"<div v-if=\"client.connected\" > <input type=\"checkbox\" v-model=\"liked\"> Jaime"
+	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"checkbox\" v-model=\"liked\"> Jaime"
 	+"<input type=\"checkbox\" v-model=\"disliked\"> Jaime pas</div></div>"
 });
 var twatter = new Vue({
@@ -118,12 +113,13 @@ var twatter = new Vue({
 			likes : [],
 			dislikes : [],
 			filtres : {
-				ateveryone : false,
-				atclient : false,
+				ateveryone : true,
+				atclient : true,
 				atpseudo : false,
 				user : "",
 				hashtag : false,
-				nomhash : ""
+				nomhash : "",
+				ouet : "ou",
 			}
 
 		},
