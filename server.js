@@ -14,7 +14,6 @@ client.connect();
 server.use(express.static('public'));
 server.use(bodyparser.urlencoded({ extended: false }));
 server.get("/",function (req,res) {
-	console.log(req.query);
 	res.sendFile('accueil.html',{root:"public"});
 });
 server.post("/connect",function (req,res) {
@@ -150,11 +149,13 @@ server.get("/desabonne",function (req,res) {
 		}
 	});
 });
-server.get("/jaimepas",function (req,res) {
+server.get("/react",function (req,res) {
 	var pseudo = req.query.pseudo;
 	var nmess = req.query.nmessage;
+	var reaction = req.query.reaction;
+	console.log("Couc");
 	var requete = "DELETE FROM LIKES WHERE pseudo LIKE '" + pseudo + "' AND nmessage = " + nmess;
-	requete += ";INSERT INTO Likes(nmessage,pseudo,reaction) VALUES (" + nmess + ",'" + pseudo + "'," + -1 +  ")";
+	requete += ";INSERT INTO Likes(nmessage,pseudo,reaction) VALUES (" + nmess + ",'" + pseudo + "'," + reaction +  ");";
 	client.query(requete,function (err,resp) {
 		if(err){
 			console.log(err);

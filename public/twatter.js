@@ -1,10 +1,13 @@
 Vue.component('publication',{
 	props:['publi','client','global'],
-	data : function (){
-		return {
-		liked : this.client.reactions.includes({nmessage : this.publi.nmessage,reaction : 1}),
-		disliked : this.client.reactions.includes({nmessage : this.publi.nmessage,reaction : -1})
-		};
+	data : function () {
+			return {
+				reaction : function () {
+					console.log(this.client.reactions);
+					return 0;
+				}
+			}
+
 	},
 	methods: {
 		afficherdate: function(){
@@ -20,12 +23,15 @@ Vue.component('publication',{
 			return result;
 		},
 		to_print : function () {
-
 				var abos = this.client.abos;
 				var name_to_at = [pseudo,"everyone"].concat(abos.slice());
 				if(this.global.filtres.atclient && this.publi.pseudo == this.client.pseudo)
 				{
 					return true;
+				}
+				if(this.global.filtres.atpseudo && this.global.filtres.user != "")
+				{
+					return this.publi.pseudo === this.global.filtres.user;
 				}
 				//Le message n'est pas ecrit par une personne que l'on suit
 				if(!(abos.includes(this.publi.pseudo)))
@@ -51,6 +57,12 @@ Vue.component('publication',{
 			$.get("http://localhost:8080/desabonne",{abonne : this.client.pseudo, abonnement : this.publi.pseudo },
 				function (data) {
 
+				});
+		},
+		react : function () {
+				$.get("http://localhost:8080/react",{pseudo : this.client.pseudo,nmessage : this.publi.nmessage,reaction : this.reaction},
+				function (data){
+					console.log(data);
 				});
 		}
 
@@ -85,10 +97,6 @@ Vue.component('publication',{
 				}
 			}
 		},
-		jaimepas : function () {
-			$.get("http://localhost:8080/disliked",{pseudo : this.client.pseudo,nmessage : this.publi.nmessage},
-			function (){});
-		},
 		non_abonne : function () {
 			return this.client.connected && !this.client.abos.includes(this.publi.pseudo) && this.client.pseudo != this.publi.pseudo;
 		},
@@ -100,8 +108,8 @@ Vue.component('publication',{
 	"<div v-if=to_print() class = 'publi'> <span> <img class=avatar v-bind:src=avatar /> {{publi.pseudo}}" +
 	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span> :" +
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
-	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"checkbox\" v-model=\"liked\"> Jaime"
-	+"<input type=\"checkbox\" v-model=\"disliked\"> Jaime pas</div></div>"
+	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =1> Jaime"
+	+"<input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =-1> Jaime pas <input type='radio' v-model='reaction' value = 0 v-on:change='react'></div></div>"
 });
 var twatter = new Vue({
 	el: "#all",
@@ -154,9 +162,6 @@ var twatter = new Vue({
 			$.get("http://localhost:8080/dislike",function(data){
 				dislike(data);
 			});
-			/*$.get("http://localhost:8080/react_client",{pseudo : this.client.pseudo},function (data) {
-				reactions(data);
-			});*/
 		},500);
 	},
 	methods: {
@@ -204,7 +209,6 @@ function ajout_msg(data) {
 	for (var msg in twatter.messages) {
 		deja_ajout.push(twatter.messages[msg].nmessage);
 	}
-	//console.log(deja_ajout);
 	twatter.messages = data.filter(msg => ! (deja_ajout.includes(msg.nmessage))).concat(twatter.messages);
 };
 function list_abos(data) {
@@ -219,9 +223,6 @@ function like(data) {
 function dislike(data) {
 	twatter.global.dislikes = data;
 }
-function reactions(data) {
-	twatter.client.reactions = data;
-}
 function get_name_client() {
 			var url = window.location.href;
 			var i = url.lastIndexOf('/')+1;
@@ -233,6 +234,12 @@ $.get("http://localhost:8080/avatar",{pseudo : twatter.client.pseudo},
 	function (data) {
 		avatar(data);
 });
+$.get("http://localhost:8080/react_client",{pseudo : twatter.client.pseudo},function (data) {
+	reactions(data);
+});
+function reactions(data) {
+	twatter.client.reactions = data;
+}
 function avatar(data){
 	twatter.client.avatar = "/pictures/" + data[0].avatar;
 }
