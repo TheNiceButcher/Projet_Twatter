@@ -1,0 +1,22 @@
+{
+  "name": "projet_prog_web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gaufre.informatique.univ-paris-diderot.fr:hamdanih/projet_prog_web.git"
+  },
+  "author": "Harris HAMDANI",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "json": "^11.0.0",
+    "pg": "^8.6.0"
+  },
+  "devDependencies": {}
+}
