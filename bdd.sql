@@ -33,4 +33,4 @@ INSERT INTO Message(pseudo,contenu,d_msg) VALUES
 ('Elon-kun','vIVE TESLA', NOW()),
 ('Laink','@everyone Bienvenue', NOW());
 INSERT INTO Abonnements(abonne,abonnement) VALUES
-('Laink,Elon-kun');
+('Laink','Elon-kun');
