@@ -7,26 +7,26 @@
 		<link rel="stylesheet" href="../twatter.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 	<body>
 		<div id="all">
-			<div class="baniere">
-				<h1> Twatter votre réseau social préféré <h1>
+			<div class="info_connect">
+						<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
+						<p> Bonjour {{client.pseudo}} </p>
+						<button type="button" name="button">Modifier votre profil</button>
+						<form action="http://localhost:8080/" method="get">
+							<input type="submit" name="" value="Se deconnecter">
+						</form>
 			</div>
-			<div v-if="client.connected" class="coucou">
-				<div class="info_connect">
-					<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
-					<p> Bonjour {{client.pseudo}} </p>
-					<form class="" action="http://localhost:8080/" method="get">
-						<input type="submit" name="" value="Se deconnecter">
-					</form>
-				</div>
-				<div class="nouveau_message">
-					<form class = "pu" v-on:submit.prevent="publier">
-						<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours"></textarea>
-						<button>Poster</button>
-					</form>
-				</div>
+			<div class="jumbotron " class="baniere">
+				<div class="display-4"> Twatter votre réseau social préféré </div>
+			</div>
+			<div class="nouveau_message">
+				<form class = "pu" v-on:submit.prevent="publier">
+					<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours" rows="6" cols="50"></textarea>
+					<button>Poster</button>
+				</form>
 			</div>
 			<div class="filtres" v-if="client.connected">
 				<label for="">Filtres possibles</label> <br>
@@ -41,7 +41,7 @@
 				<input type="radio" v-model="global.filtres.ouet" value="ou">Ou</input> <br>
 				<button v-on:click="defaut">Retablir valeurs par défaut</button>
 			</div>
-			<div class="publications">
+			<div class="publications" class = 'container'>
 				<publication
 					v-for="message in messages" v-bind:key="message.nmsg" v-bind:publi="message" v-bind:client="client" v-bind:global="global">
 				</publication>

@@ -150,8 +150,8 @@ Vue.component('publication',{
 		}
 	},
 	template:
-	"<div v-if=to_print() class = 'publi' v-bind:id=idmess> <span> <img class=avatar v-bind:src=avatar /> <p v-on:click='profile'>{{publi.pseudo}}</p>" +
-	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span> :" +
+	"<div v-if=to_print() class='publi' v-bind:id=idmess> <span> <img class=avatar v-bind:src=avatar /> <p v-on:click='profile'>{{publi.pseudo}}</p>" +
+	"<button v-on:click='abonne' v-if=non_abonne>S'abonner</button> <button v-on:click='desabonne' v-if=desabonnable>Se desabonner</button> </span>" +
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
 	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =1> J'aime"
 	+"<input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =-1> J'aime pas <input type='radio' v-model='reaction' value = 0 v-on:change='react'></div>"
