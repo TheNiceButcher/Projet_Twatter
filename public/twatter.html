@@ -22,7 +22,7 @@
 			<div class="jumbotron " class="baniere">
 				<div class="display-4"> Twatter votre réseau social préféré </div>
 			</div>
-			<div class="nouveau_message">
+			<div class="nouveau_message" id="poste">
 				<form class = "pu" v-on:submit.prevent="publier">
 					<textarea id="publi" placeholder="Votre publication" v-model="publi_en_cours" rows="6" cols="50"></textarea>
 					<button>Poster</button>

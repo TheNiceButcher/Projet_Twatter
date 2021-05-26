@@ -155,7 +155,7 @@ Vue.component('publication',{
 	"<pre> {{publi.contenu}} </pre> {{afficherdate()}} {{afficherheure()}} ({{like}} J'aime,{{dislike}} J'aime pas)"
 	+"<div v-if=\"client.pseudo!=publi.pseudo\" > <input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =1> J'aime"
 	+"<input type=\"radio\" v-model=\"reaction\" v-on:change='react' value =-1> J'aime pas <input type='radio' v-model='reaction' value = 0 v-on:change='react'></div>"
-	+ "<button v-if='client.pseudo!=publi.pseudo' v-on:click='repondre'>Repondre</button></div>"
+	+ "<a href='#poste'><button v-if='client.pseudo!=publi.pseudo' v-on:click='repondre'>Repondre</button></a></div>"
 });
 var twatter = new Vue({
 	el: "#all",
