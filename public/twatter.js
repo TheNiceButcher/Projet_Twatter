@@ -216,7 +216,7 @@ var twatter = new Vue({
 			console.log(this.publi_en_cours);
 			if (this.publi_en_cours != "")
 			{
-				$.post("http://localhost:8080/publi/",{pseudo:this.client.pseudo,message:this.publi_en_cours},
+				$.post("http://localhost:8080/publi/",{pseudo:this.client.pseudo,message:this.publi_en_cours.replace("'","\'\'")},
 					function (data) {
 					});
 				this.publi_en_cours = "";
