@@ -27,7 +27,7 @@ Vue.component('publication',{
 			return this.publi.contenu.includes("@everyone");
 		},
 		to_print_atclient : function () {
-			return this.publi.pseudo.includes("@" + this.client.pseudo);
+			return this.publi.contenu.includes("@" + this.client.pseudo);
 		},
 		to_print_hashtag : function () {
 			return this.publi.pseudo.includes("#" + this.global.filtres.nomhash);
