@@ -2,9 +2,8 @@ Vue.component('publication',{
 	props:['publi','client','global'],
 	data : function () {
 			return {
-				reaction : 
+				reaction : 0
 			}
-
 	},
 	methods: {
 		afficherdate: function(){
@@ -147,7 +146,8 @@ Vue.component('publication',{
 		},
 		idmess : function () {
 				return "mess" + this.publi.nmessage;
-		}
+		},
+
 	},
 	template:
 	"<div v-if=to_print() class='publi' v-bind:id=idmess> <span> <img class=avatar v-bind:src=avatar /> <p v-on:click='profile'>{{publi.pseudo}}</p>" +
@@ -291,6 +291,11 @@ function like(data) {
 function dislike(data) {
 	twatter.global.dislikes = data;
 }
+/*function reaction(nmessage,pseudo){
+	return $.get("http://localhost:8080/react",{pseudo : pseudo,nmsg : nmessage},function () {
+
+	});
+}*/
 function get_name_client() {
 	var url = window.location.href;
 	var i = url.lastIndexOf('/')+1;
