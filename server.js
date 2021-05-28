@@ -178,6 +178,20 @@ server.get("/home/:pseudo",function (req,res,next) {
 		else res.sendFile("twatter.html",{root : "public"});
 	});
 });
+server.get("/edit_profil/:pseudo",function (req,res,next) {
+	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.params.pseudo + '\';';
+	client.query(requete,function (err,resp){
+		if(err){
+			console.log(err);
+			return;
+		}
+		if (resp.rows.length == 0)
+		{
+			next();
+		}
+		else res.sendFile("modif_profil.html",{root : "public"});
+	});
+});
 server.use(function (req,res) {
 	res.sendFile("erreur.html",{root:"public"});
 });

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Twittar - Le réseau </title>
+		<link rel="icon" type="image/png" href="/pictures/logo.png"/>
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="/twatter.css">
+	</head>
+	<body>
+		<div id="all">
+			<div class="info_connect">
+					<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
+					<p> Bonjour {{client.pseudo}} </p>
+					<button type="button" name="button">Modifier votre profil</button>
+					<form action="http://localhost:8080/" method="get">
+						<input type="submit" name="" value="Se deconnecter">
+					</form>
+			</div>
+			<div class="jumbotron " class="baniere">
+				<div class="display-4"> Twatter votre réseau social préféré </div>
+			</div>
+			<div class="choix_avatar rows">
+				<p> Cliquez sur l'avatar de votre choix </p>
+				<img class="avatar_choix col-6" src="/pictures/default.jpeg" alt="AvatarDefaut">
+				<input type="radio" value="/pictures/default.jpeg" v-model="client.avatar">
+				<img class="avatar_choix" src="/pictures/lelouch.jpeg" alt="AvatarLelouch"> 
+				<input type="radio" value="/pictures/lelouch.jpeg" v-model="client.avatar">
+				<p> Choix actuel : {{client.avatar}} </p>
+			</div>
+			<div class="choix_color rows">
+			 	<label for="">Couleur</label><input type="color" name="" value="">
+			</div>
+		</div>
+		<script src="/twatter.js"></script>
+	</body>
+</html>

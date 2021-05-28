@@ -5,7 +5,7 @@ CREATE DATABASE twatter;
 \c twatter twattos localhost;
 CREATE TABLE Utilisateur (
 	pseudo TEXT PRIMARY KEY,
-	avatar TEXT DEFAULT 'default.jpeg',
+	avatar TEXT DEFAULT '/pictures/default.jpeg',
 	mot_de_passe TEXT NOT NULL
 );
 CREATE TABLE Message (
