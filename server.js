@@ -16,6 +16,7 @@ server.use(bodyparser.urlencoded({ extended: false }));
 server.get("/",function (req,res) {
 	res.sendFile('accueil.html',{root:"public"});
 });
+//Demande de connexion
 server.post("/connect",function (req,res) {
 	console.log("Connexion de " + req.body.pseudo);
 	var requete = 'SELECT * FROM Utilisateur WHERE pseudo LIKE \'' + req.body.pseudo + '\' AND mot_de_passe LIKE \'' + req.body.pwd + '\';';
@@ -35,6 +36,7 @@ server.post("/connect",function (req,res) {
 		}
 	});
 });
+//Renvoie les messages
 server.get("/msg", function (req,res) {
 	var d = req.query.date;
 	var requete = 'SELECT * FROM Message WHERE d_msg > \'' + req.query.date + '\' ORDER BY nmessage DESC;';
@@ -47,6 +49,7 @@ server.get("/msg", function (req,res) {
 		res.json(r);
 	});
 });
+//Renvoie les abonnements
 server.get("/abos",function (req,res) {
 	var d = req.query.pseudo;
 	var requete = 'SELECT abonnement AS pseudo FROM Abonnements WHERE abonne LIKE \'' + d + '\';';
@@ -63,6 +66,7 @@ server.get("/abos",function (req,res) {
 		res.send(t);
 	});
 });
+//Publie le message
 server.post("/publi",function (req,res) {
 	const pseudo = req.body.pseudo;
 	const msg = req.body.message;
@@ -74,6 +78,7 @@ server.post("/publi",function (req,res) {
 		}
 	});
 });
+//Renvoie les liens
 server.get("/avatars",function (req,res) {
 	var requete = 'SELECT * FROM Utilisateur;';
 	client.query(requete,function (err,resp){
@@ -152,7 +157,6 @@ server.get("/react",function (req,res) {
 	var pseudo = req.query.pseudo;
 	var nmess = req.query.nmessage;
 	var reaction = req.query.reaction;
-	console.log("Couc");
 	var requete = "DELETE FROM LIKES WHERE pseudo LIKE '" + pseudo + "' AND nmessage = " + nmess;
 	requete += ";INSERT INTO Likes(nmessage,pseudo,reaction) VALUES (" + nmess + ",'" + pseudo + "'," + reaction +  ");";
 	client.query(requete,function (err,resp) {
@@ -201,6 +205,25 @@ server.get("/modif_profil/",function (req,res,next) {
 			console.log(err);
 			return;
 		}
+	});
+});
+server.get("/rea",function (req,res,next) {
+	var pseudo = req.query.pseudo;
+	var nmsg = req.query.nmsg;
+	console.log(req.query);
+	var requete = 'SELECT reaction FROM Likes WHERE pseudo Like \'' + pseudo + '\' AND nmessage = ' + nmsg + ';';
+	console.log(requete);
+	client.query(requete,function (err,resp){
+		if(err){
+			console.log(err);
+			return;
+		}
+		if(resp.rows.length == 0)
+		{
+			res.send([0]);
+		}
+		else
+			res.send([resp.rows[0].reaction]);
 	});
 });
 server.use(function (req,res) {
