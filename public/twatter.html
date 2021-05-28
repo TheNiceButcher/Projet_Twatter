@@ -4,20 +4,20 @@
 		<meta charset="utf-8">
 		<title>Twittar - Le réseau </title>
 		<link rel="icon" type="image/png" href="/pictures/logo.png"/>
-		<link rel="stylesheet" href="../twatter.css">
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="../twatter.css">
 	</head>
 	<body>
 		<div id="all">
 			<div class="info_connect">
-						<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
-						<p> Bonjour {{client.pseudo}} </p>
-						<button type="button" name="button">Modifier votre profil</button>
-						<form action="http://localhost:8080/" method="get">
-							<input type="submit" name="" value="Se deconnecter">
-						</form>
+					<img class="avatar" v-bind:src="client.avatar" alt="Avatar" id = "profile">
+					<p> Bonjour {{client.pseudo}} </p>
+					<a v-bind:href="client.modif_profil" ><button type="button" name="button">Modifier votre profil</button></a>
+					<form action="http://localhost:8080/" method="get">
+						<input type="submit" name="" value="Se deconnecter">
+					</form>
 			</div>
 			<div class="jumbotron " class="baniere">
 				<div class="display-4"> Twatter votre réseau social préféré </div>

@@ -135,7 +135,7 @@ Vue.component('publication',{
 			{
 				if (this.global.avatars[i].pseudo === this.publi.pseudo)
 				{
-					return "/pictures/" + this.global.avatars[i].avatar;
+					return this.global.avatars[i].avatar;
 				}
 			}
 		},
@@ -184,7 +184,8 @@ var twatter = new Vue({
 			avatar : '',
 			unknown : false,
 			reactions : [],
-			abos : []
+			abos : [],
+			modif_profil : "/edit_profil/"
 		},
 		dernier_import : new Date("1970-11-25")
 	},
@@ -288,6 +289,7 @@ function get_name_client() {
 			var i = url.lastIndexOf('/')+1;
 			twatter.client.connected = true;
 			twatter.client.pseudo = url.substring(i);
+			twatter.client.modif_profil += twatter.client.pseudo;
 	};
 get_name_client();
 $.get("http://localhost:8080/avatar",{pseudo : twatter.client.pseudo},
@@ -301,5 +303,5 @@ function reactions(data) {
 	twatter.client.reactions = data;
 }
 function avatar(data){
-	twatter.client.avatar = "/pictures/" + data[0].avatar;
+	twatter.client.avatar = data[0].avatar;
 }

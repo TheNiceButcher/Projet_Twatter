@@ -45,7 +45,7 @@ Vue.component('publication',{
 			{
 				if (this.global.avatars[i].pseudo === this.publi.pseudo)
 				{
-					return "pictures/" + this.global.avatars[i].avatar;
+					return this.global.avatars[i].avatar;
 				}
 			}
 		}

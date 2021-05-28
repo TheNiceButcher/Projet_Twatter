@@ -36,3 +36,11 @@
 .msg_erreur{
 	text-align: center;
 }
+.avatar_choix{
+	height: 200px;
+	length: 200px;
+}
+.choix_avatar{
+	position: absolute;
+	right: 30%;
+}
