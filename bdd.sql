@@ -6,7 +6,8 @@ CREATE DATABASE twatter;
 CREATE TABLE Utilisateur (
 	pseudo TEXT PRIMARY KEY,
 	avatar TEXT DEFAULT '/pictures/default.jpeg',
-	mot_de_passe TEXT NOT NULL
+	mot_de_passe TEXT NOT NULL,
+	couleur CHAR(7) NOT NULL DEFAULT '#E9ECEF'
 );
 CREATE TABLE Message (
 	nmessage SERIAL PRIMARY KEY,

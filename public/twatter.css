@@ -42,7 +42,7 @@
 }
 .choix_avatar{
 	position: absolute;
-	right: 30%;
+	right: 10%;
 }
 .logo{
 	height: 95px;
@@ -52,4 +52,8 @@
 }
 .display-4{
 	padding-left: 100px;
+}
+#retour_home{
+	position: absolute;
+	left: 40%;
 }

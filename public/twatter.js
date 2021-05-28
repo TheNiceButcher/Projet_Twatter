@@ -185,7 +185,8 @@ var twatter = new Vue({
 			unknown : false,
 			reactions : [],
 			abos : [],
-			modif_profil : "/edit_profil/"
+			modif_profil : "/edit_profil/",
+			couleur : "",
 		},
 		dernier_import : new Date("1970-11-25")
 	},
@@ -232,6 +233,12 @@ var twatter = new Vue({
 			this.global.filtres.nomhash = "";
 			this.global.filtres.abo = true;
 			this.global.filtres.ouet = "ou";
+		},
+		retour_sauver : function () {
+			console.log("Salut " + this.client.couleur);
+			$.get("http://localhost:8080/modif_profil",{pseudo : this.client.pseudo, avatar : this.client.avatar, couleur : this.client.couleur},
+				function (data) {
+				});
 		}
 	}
 });
@@ -292,7 +299,7 @@ function get_name_client() {
 			twatter.client.modif_profil += twatter.client.pseudo;
 	};
 get_name_client();
-$.get("http://localhost:8080/avatar",{pseudo : twatter.client.pseudo},
+$.get("http://localhost:8080/info_client",{pseudo : twatter.client.pseudo},
 	function (data) {
 		avatar(data);
 });
@@ -304,9 +311,12 @@ function reactions(data) {
 }
 function avatar(data){
 	twatter.client.avatar = data[0].avatar;
+	console.log(data[0].couleur);
+	$(".jumbotron").css({"background-color":data[0].couleur});
 }
 $("input[type='color']").change(function () {
 	$(".jumbotron").css({"background-color":$(this).val()});
+	twatter.client.couleur = $(this).val();
 })
 $("#color-defaut").click(function () {
 	$("input[type='color']").val("#E9ECEF");

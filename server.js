@@ -61,7 +61,6 @@ server.get("/abos",function (req,res) {
 			t.push(r[i].pseudo);
 		}
 		res.send(t);
-		//res.json(r);
 	});
 });
 server.post("/publi",function (req,res) {
@@ -85,8 +84,8 @@ server.get("/avatars",function (req,res) {
 		res.json(resp.rows);
 	});
 });
-server.get("/avatar",function (req,res) {
-	var requete = 'SELECT avatar FROM Utilisateur WHERE pseudo LIKE \'' + req.query.pseudo + '\';';
+server.get("/info_client",function (req,res) {
+	var requete = 'SELECT couleur,avatar FROM Utilisateur WHERE pseudo LIKE \'' + req.query.pseudo + '\';';
 	client.query(requete,function (err,resp){
 		if(err){
 			console.log(err);
@@ -190,6 +189,18 @@ server.get("/edit_profil/:pseudo",function (req,res,next) {
 			next();
 		}
 		else res.sendFile("modif_profil.html",{root : "public"});
+	});
+});
+server.get("/modif_profil/",function (req,res,next) {
+	var pseudo = req.query.pseudo;
+	var avatar = req.query.avatar;
+	var couleur = req.query.couleur;
+	var requete = 'UPDATE Utilisateur SET avatar = \'' + avatar + '\', couleur = \'' + couleur + '\' WHERE pseudo LIKE \'' + pseudo + '\';';
+	client.query(requete,function (err,resp){
+		if(err){
+			console.log(err);
+			return;
+		}
 	});
 });
 server.use(function (req,res) {
