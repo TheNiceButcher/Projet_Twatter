@@ -19,19 +19,22 @@
 						<input type="submit" name="" value="Se deconnecter">
 					</form>
 			</div>
-			<div class="jumbotron " class="baniere">
+			<div class="jumbotron" class="baniere">
+				<img src="/pictures/logo.png" alt="Logo" class="logo">
 				<div class="display-4"> Twatter votre réseau social préféré </div>
 			</div>
+			<a href='/home/Laink'><button type="button" id="retour_home"> Revenir et sauvegarder</button></a>
 			<div class="choix_avatar rows">
 				<p> Cliquez sur l'avatar de votre choix </p>
 				<img class="avatar_choix col-6" src="/pictures/default.jpeg" alt="AvatarDefaut">
 				<input type="radio" value="/pictures/default.jpeg" v-model="client.avatar">
-				<img class="avatar_choix" src="/pictures/lelouch.jpeg" alt="AvatarLelouch"> 
+				<img class="avatar_choix" src="/pictures/lelouch.jpeg" alt="AvatarLelouch">
 				<input type="radio" value="/pictures/lelouch.jpeg" v-model="client.avatar">
 				<p> Choix actuel : {{client.avatar}} </p>
 			</div>
 			<div class="choix_color rows">
-			 	<label for="">Couleur</label><input type="color" name="" value="">
+			 	<label for="">Couleur</label><input type="color" value="">
+				<button type="button" id="color-defaut">Par défaut</button>
 			</div>
 		</div>
 		<script src="/twatter.js"></script>

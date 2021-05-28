@@ -44,3 +44,12 @@
 	position: absolute;
 	right: 30%;
 }
+.logo{
+	height: 95px;
+	length: 95px;
+	position: absolute;
+	top: 50px;
+}
+.display-4{
+	padding-left: 100px;
+}

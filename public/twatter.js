@@ -305,3 +305,9 @@ function reactions(data) {
 function avatar(data){
 	twatter.client.avatar = data[0].avatar;
 }
+$("input[type='color']").change(function () {
+	$(".jumbotron").css({"background-color":$(this).val()});
+})
+$("#color-defaut").click(function () {
+	$("input[type='color']").val("#E9ECEF");
+});
