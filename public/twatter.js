@@ -2,7 +2,7 @@ Vue.component('publication',{
 	props:['publi','client','global'],
 	data : function () {
 			return {
-				reaction :0
+				reaction : 
 			}
 
 	},
@@ -292,12 +292,12 @@ function dislike(data) {
 	twatter.global.dislikes = data;
 }
 function get_name_client() {
-			var url = window.location.href;
-			var i = url.lastIndexOf('/')+1;
-			twatter.client.connected = true;
-			twatter.client.pseudo = url.substring(i);
-			twatter.client.modif_profil += twatter.client.pseudo;
-	};
+	var url = window.location.href;
+	var i = url.lastIndexOf('/')+1;
+	twatter.client.connected = true;
+	twatter.client.pseudo = url.substring(i);
+	twatter.client.modif_profil += twatter.client.pseudo;
+};
 get_name_client();
 $.get("http://localhost:8080/info_client",{pseudo : twatter.client.pseudo},
 	function (data) {
@@ -311,6 +311,6 @@ function reactions(data) {
 }
 function avatar(data){
 	twatter.client.avatar = data[0].avatar;
-	console.log(data[0].couleur);
+	twatter.client.couleur = data[0].couleur;
 	$(".jumbotron").css({"background-color":data[0].couleur});
 }
