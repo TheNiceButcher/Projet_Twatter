@@ -23,7 +23,8 @@
 				<img src="/pictures/logo.png" alt="Logo" class="logo">
 				<div class="display-4"> Twatter votre réseau social préféré </div>
 			</div>
-			<button type="button" id="retour_home" v-on:click="retour_sauver"> Sauvegarder les modifications</button>
+			<button type="button" id="save" v-on:click="retour_sauver"> Sauvegarder les modifications</button>
+			<a id="home_client" href="/home"><button type="button" id="home" name="button">Revenir</button></a>
 			<div class="choix_avatar rows">
 				<p> Cliquez sur l'avatar de votre choix </p>
 				<img class="avatar_choix col-6" src="/pictures/default.jpeg" alt="AvatarDefaut">
@@ -38,5 +39,6 @@
 			</div>
 		</div>
 		<script src="/twatter.js"></script>
+		<script src="/modif.js"></script>
 	</body>
 </html>
